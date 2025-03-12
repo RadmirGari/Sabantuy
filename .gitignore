@@ -1,0 +1,23 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Local environment variables (keep a template like .env.example)
+.env*
+!.env.example
+
+# Logs
+*.log
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE settings
+.vscode/
+.idea/
