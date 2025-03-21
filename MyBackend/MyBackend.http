@@ -1,6 +1,6 @@
 @MyBackend_HostAddress = http://localhost:5067
 
-GET {{MyBackend_HostAddress}}/
+GET {{MyBackend_HostAddress}}/Section/
 Accept: application/json
 
 ###

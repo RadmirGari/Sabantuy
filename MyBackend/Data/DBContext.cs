@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Model;
 public class MyDbContext : DbContext
 {
     public MyDbContext(DbContextOptions<MyDbContext> options)
@@ -6,6 +7,8 @@ public class MyDbContext : DbContext
     {
     }
 
-    public DbSet<Section> Sections { get; set; }
+    public DbSet<Section> sections { get; set; }
+
+    public DbSet<Subscribers> subscribers { get; set; }
 }
 
