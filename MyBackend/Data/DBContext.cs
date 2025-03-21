@@ -6,11 +6,6 @@ public class MyDbContext : DbContext
     {
     }
 
-    public DbSet<MyEntity> MyEntities { get; set; }
+    public DbSet<Section> Sections { get; set; }
 }
 
-public class MyEntity
-{
-    public int Id { get; set; }
-    public required string Name { get; set; }
-}
