@@ -3,70 +3,90 @@ using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
-[Route("api/[controller]")]
+[Route("api/sections")]
 [ApiController]
-public class SectionController : ControllerBase {
-    private readonly MyDbContext _context;
-    private int DEFAULT_CREATE_NEW = -1;
+public class SectionController : ControllerBase
+{
+    private const int CREATE_NEW = -1;
+    private readonly MyDbContext   _db;
+    private readonly IImageService _images;
 
-    public SectionController(MyDbContext context){
-        _context = context;
+    public SectionController(MyDbContext db, IImageService images)
+    {
+        _db     = db;
+        _images = images;
     }
 
-    // Endpoint: GET /api/section
-    // Read all sections.
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Section>>> GetAllSections(){
-        return await _context.sections.ToListAsync();
+    public async Task<ActionResult<IEnumerable<Section>>> GetAll()
+        => Ok(await _db.sections.Include(s => s.Images).ToListAsync());
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Section>> Get(int id)
+    {
+        var sec = await _db.sections
+            .Include(s => s.Images)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        return sec is null ? NotFound() : Ok(sec);
     }
 
-    // Endpoint: Get /api/section/{id}
-    // Read specific section
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Section>> GetSectionById(int id){
-        var section = await _context.sections.FindAsync(id);
+    // upsert section + cascade image metadata changes via service
+    [HttpPut("{id}/{password}")]
+    public async Task<IActionResult> Upsert(int id, [FromBody] Section updated, string password)
+    {
+        // password check
+        var envPwd = Environment.GetEnvironmentVariable("SECTION_ADMIN_PASSWORD");
+        if (password != envPwd) 
+            return Unauthorized();
 
-        if (section == null)
+        // create new
+        if (id == CREATE_NEW)
+        {
+            _db.sections.Add(updated);
+            await _db.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = updated.Id }, updated);
+        }
+
+        // update existing
+        if (id != updated.Id) 
+            return BadRequest();
+
+        var existing = await _db.sections
+            .Include(s => s.Images)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (existing == null) 
             return NotFound();
 
-        return section;
-    }
+        existing.Name        = updated.Name;
+        existing.Information = updated.Information;
 
-    // PUT /api/sections/{id}/{password}
-    // Creates a new Section if id == -1, otherwise updates the existing one.
-    [HttpPut("{id}/{password}")]
-    public async Task<IActionResult> UpdateSection(int id, [FromBody] Section updated, string password)
-    {
-        //Check password
-        var envPwd = Environment.GetEnvironmentVariable("SECTION_ADMIN_PASSWORD");
-        if (string.IsNullOrEmpty(envPwd) || password != envPwd)
-            return Unauthorized("Invalid password.");
-
-        // Create new
-        if (id == DEFAULT_CREATE_NEW)
+        // find/removals
+        var toRemove = existing.Images
+            .Where(ei => !updated.Images.Any(ui => ui.Id == ei.Id))
+            .ToList();
+        foreach (var img in toRemove)
         {
-            _context.sections.Add(updated);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSectionById), new { id = updated.Id }, updated);
+            // call service to delete both file & DB row
+            await _images.DeleteAsync(img.Id, password);
         }
 
-        // Update existing
-        if (id != updated.Id)
-            return BadRequest("ID in URL and body must match.");
-
-        _context.Entry(updated).State = EntityState.Modified;
-        try
+        // add/update
+        foreach (var ui in updated.Images)
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await _context.sections.AnyAsync(s => s.Id == id))
-                return NotFound();
-            throw;
+            if (ui.Id == 0)
+                existing.Images.Add(ui);
+            else
+            {
+                var ei = existing.Images.First(i => i.Id == ui.Id);
+                ei.Url         = ui.Url;
+                ei.FileName    = ui.FileName;
+                ei.ContentType = ui.ContentType;
+            }
         }
 
+        await _db.SaveChangesAsync();
         return NoContent();
     }
 }

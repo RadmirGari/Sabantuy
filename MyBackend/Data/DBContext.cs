@@ -14,6 +14,16 @@ namespace Data.DBContext{
         public DbSet<Subscribers> subscribers { get; set; }
 
         public DbSet<Image> Images { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Section>()
+                .HasMany(s => s.Images)
+                .WithOne(i => i.Section!)
+                .HasForeignKey(i => i.SectionId);
+
+            base.OnModelCreating(builder);
+        }
     }
 }
 

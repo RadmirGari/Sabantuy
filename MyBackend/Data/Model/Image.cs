@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
@@ -15,5 +16,10 @@ namespace Data.Models
 
         [MaxLength(100)]
         public string ContentType { get; set; } = string.Empty;
+
+        public int SectionId { get; set; }
+
+        [ForeignKey(nameof(SectionId))]
+        public required Section Section { get; set; }
     }
 }

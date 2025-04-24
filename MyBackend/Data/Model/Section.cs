@@ -11,6 +11,6 @@ namespace Data.Models{
         [Required]
         public required string Information { get; set; } = String.Empty;
 
-        public List<Image> Images { get; set; } = new List<Image>();
+        public ICollection<Image> Images { get; set; } = new List<Image>();
     }
 }
