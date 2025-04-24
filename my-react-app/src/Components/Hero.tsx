@@ -1,8 +1,8 @@
-function Group() {
+function Hero() {
     return(
         <>
         </>
     )
 }
 
-export default Group;
+export default Hero;
