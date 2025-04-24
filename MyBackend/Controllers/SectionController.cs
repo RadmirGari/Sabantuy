@@ -94,8 +94,9 @@ public class SectionController : ControllerBase
     public IActionResult CheckPassword(string password)
     {
         var envPwd = Environment.GetEnvironmentVariable("SECTION_ADMIN_PASSWORD");
-        if (string.IsNullOrEmpty(envPwd) || password != envPwd)
+        if (string.IsNullOrEmpty(envPwd) || password != envPwd){
             return Unauthorized("Invalid password.");
+        }
         return Ok("Password is valid.");
     }
 }

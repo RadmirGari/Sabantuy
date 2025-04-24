@@ -17,7 +17,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ setLoggedIn }) => {
       if (res.ok) {
         setLoggedIn(true);
       } else {
-        // optional: show an error
         console.warn('Invalid password');
       }
     } catch (err) {

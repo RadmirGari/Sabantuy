@@ -5,6 +5,13 @@ using DotNetEnv;
 Env.Load(); 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(o => o.AddPolicy("AllowReact",
+    p => p.WithOrigins("http://localhost:5173")
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+));
+
+
 // Register the DbContext with SQLite
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -17,6 +24,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -28,6 +36,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; 
     });
 }
+
+app.UseCors("AllowReact");
 
 app.UseHttpsRedirection();
 
