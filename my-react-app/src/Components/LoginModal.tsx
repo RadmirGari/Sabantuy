@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 
 interface LoginModalProps {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ setLoggedIn }) => {
-  const [password, setPassword] = useState('');
+const LoginModal: React.FC<LoginModalProps> = ({ setLoggedIn, setPassword}) => {
+  const [tempPassword, setTempPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch(
-        `http://localhost:5067/api/Section/check/${encodeURIComponent(password)}`,
+        `http://localhost:5067/api/Section/check/${encodeURIComponent(tempPassword)}`,
         { method: 'GET' }
       );
       if (res.ok) {
         setLoggedIn(true);
+        setPassword(tempPassword);
       } else {
         console.warn('Invalid password');
       }
@@ -33,8 +35,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ setLoggedIn }) => {
             <span className="block mb-1">Password:</span>
             <input
               type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              value={tempPassword}
+              onChange={e => setTempPassword(e.target.value)}
               className="w-full px-3 py-2 border rounded focus:outline-none focus:ring"
             />
           </label>

@@ -11,11 +11,12 @@ const sampleItems = [
 
 function AdminHome() {
     const [loggedIn, setLoggedIn] = useState(false);
+    const [password, setPassword] = useState("");
     
     return(
         <div>
         <Section title="Activities" items={sampleItems} isAdmin />
-             {!loggedIn && <LoginModal setLoggedIn={setLoggedIn} />}
+             {!loggedIn && <LoginModal setLoggedIn={setLoggedIn} setPassword={setPassword} />}
         <Section title="History" items={sampleItems} isAdmin />
       </div>
     )
