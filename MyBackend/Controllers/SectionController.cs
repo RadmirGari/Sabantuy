@@ -3,7 +3,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Route("api/sections")]
+[Route("api/[controller]")]
 [ApiController]
 public class SectionController : ControllerBase
 {
@@ -88,5 +88,14 @@ public class SectionController : ControllerBase
 
         await _db.SaveChangesAsync();
         return NoContent();
+    }
+
+    [HttpGet("check/{password}")]
+    public IActionResult CheckPassword(string password)
+    {
+        var envPwd = Environment.GetEnvironmentVariable("SECTION_ADMIN_PASSWORD");
+        if (string.IsNullOrEmpty(envPwd) || password != envPwd)
+            return Unauthorized("Invalid password.");
+        return Ok("Password is valid.");
     }
 }

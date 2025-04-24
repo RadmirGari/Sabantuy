@@ -1,6 +1,8 @@
 using Data.DBContext;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
+Env.Load(); 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register the DbContext with SQLite
@@ -23,10 +25,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty;  // serve UI at root: https://localhost:5001/
+        c.RoutePrefix = string.Empty; 
     });
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
