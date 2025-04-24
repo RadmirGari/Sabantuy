@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+
 namespace Model;
 public class Subscribers
 {
-    public int Id { get; set; }
-    public required string Name { get; set; }
-
-    public required string Email { get; set; }
-
+    [Key]
+    public required int Id { get; set; }
+    [Required]
+    public required string Name { get; set; } = String.Empty;
+    [Required]
+    public required string Email { get; set; } = String.Empty;
 }
