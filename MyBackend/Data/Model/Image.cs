@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Model
+namespace Data.Models
 {
     public class Image
     {
@@ -15,5 +16,10 @@ namespace Model
 
         [MaxLength(100)]
         public string ContentType { get; set; } = string.Empty;
+
+        public int SectionId { get; set; }
+
+        [ForeignKey(nameof(SectionId))]
+        public required Section Section { get; set; }
     }
 }

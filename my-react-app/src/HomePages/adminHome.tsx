@@ -1,3 +1,6 @@
+import { useState } from "react";
+import LoginModal from "../Components/LoginModal";
+
 import Section from '../Components/Section';
 
 const sampleItems = [
@@ -7,9 +10,12 @@ const sampleItems = [
 ];
 
 function AdminHome() {
+    const [loggedIn, setLoggedIn] = useState(false);
+    
     return(
         <div>
         <Section title="Activities" items={sampleItems} isAdmin />
+             {!loggedIn && <LoginModal setLoggedIn={setLoggedIn} />}
         <Section title="History" items={sampleItems} isAdmin />
       </div>
     )
