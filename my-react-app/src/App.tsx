@@ -1,4 +1,4 @@
-import './App.css'
+//import './App.css'
 import AdminHome from './HomePages/adminHome';
 import Home from './HomePages/home';
 
