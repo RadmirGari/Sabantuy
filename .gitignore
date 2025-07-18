@@ -31,3 +31,4 @@ my-react-app/*.ntvs*
 my-react-app/*.njsproj
 my-react-app/*.sln
 my-react-app/*.sw?
+my-react-app/.env

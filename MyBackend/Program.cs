@@ -2,11 +2,19 @@ using Data.DBContext;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 
-Env.Load(); 
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
+
+var reactUrl = builder.Configuration["URL"];
+
+if(reactUrl == null){
+    Console.WriteLine("Couldnt find a url for the frontend in env. It returned as null.");
+    return;
+}
 
 builder.Services.AddCors(o => o.AddPolicy("AllowReact",
-    p => p.WithOrigins("http://localhost:5173")
+    p => p.WithOrigins(reactUrl)
           .AllowAnyMethod()
           .AllowAnyHeader()
 ));

@@ -11,16 +11,13 @@ const sampleItems = [
 function Home() {
     return(
         <div>
-       
-        <Hero />
-        {/* Other sections like Features, Footer, etc */}
-        <div>
-        <Section title="Activities" items={sampleItems} />
-        <Section title="History" items={sampleItems} />
+            <Hero />
+            <div>
+                <Section title="Activities" items={sampleItems} />
+                <Section title="History" items={sampleItems} />
+            </div>
+            <Subscribe />
         </div>
-
-        <Subscribe />
-      </div>
     )
 }
 
