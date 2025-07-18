@@ -15,6 +15,9 @@ namespace Data.DBContext{
 
         public DbSet<Image> Images { get; set; }
 
+        public DbSet<TextBlock> textBlocks { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Section>()
